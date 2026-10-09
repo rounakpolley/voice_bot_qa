@@ -37,13 +37,54 @@ button{font:inherit;color:inherit}
 .brand .eyebrow{font-size:.74rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .brand h1{font-size:1.35rem;margin-top:.25rem}
 .brand p{margin:.35rem 0 0;font-size:.84rem;color:var(--muted)}
-.approach{margin:.9rem .6rem 0;padding:.85rem .9rem;border:1px solid var(--line);border-radius:8px;background:var(--soft)}
-.approach h3{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 .5rem;font-family:"IBM Plex Sans",sans-serif}
-.approach dl{margin:0}
-.approach dt{font-weight:600;font-size:.78rem;margin:.55rem 0 .1rem}
-.approach dt:first-child{margin-top:0}
-.approach dd{margin:0;font-size:.76rem;color:var(--muted);line-height:1.4}
-.pagefoot{padding:1.4rem 1.2rem 2rem;font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);margin-top:1.5rem}
+/* sidebar teaser */
+.approach{display:block;margin:.9rem .6rem 0;padding:.85rem .9rem;border:1px solid var(--line);border-radius:8px;background:var(--soft);text-decoration:none;color:inherit}
+.approach:hover{border-color:var(--signal)}
+.approach h3{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 .4rem;font-family:"IBM Plex Sans",sans-serif}
+.approach p{margin:0;font-size:.77rem;color:var(--muted);line-height:1.45}
+.approach .go{display:block;margin-top:.5rem;color:var(--signal);font-weight:600;font-size:.77rem}
+/* ---- Our approach (default view) ---- */
+.ap{padding:2rem 2rem 3.5rem;max-width:1120px}
+.ap .eyebrow{font-size:.76rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--signal)}
+.ap h1{font-size:2.05rem;margin:.3rem 0 .55rem;letter-spacing:-.01em}
+.ap .lede{font-size:1.03rem;max-width:82ch;color:var(--muted);line-height:1.6;margin:0}
+.ap h2{font-size:1.16rem;margin:2.3rem 0 .85rem;padding-bottom:.45rem;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:.55rem}
+.ap h2 .n{color:var(--signal);font-family:"IBM Plex Sans Condensed",sans-serif;font-size:1.05rem}
+.ap-glance{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin:1.4rem 0 .2rem}
+.ap-glance .g{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem}
+.ap-glance .g b{display:block;font-size:1.5rem;font-family:"IBM Plex Sans Condensed",sans-serif;line-height:1;color:var(--ink)}
+.ap-glance .g span{display:block;font-size:.76rem;color:var(--muted);margin-top:.35rem;line-height:1.4}
+.ap-grid2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.ap-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:1rem 1.15rem}
+.ap-card h3{font-size:.95rem;margin:0 0 .45rem}
+.ap-card p{margin:0;font-size:.88rem;color:var(--muted);line-height:1.55}
+.ap-flow{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1.2rem 1.2rem .9rem;margin:0}
+.ap-flow svg{width:100%;height:auto;display:block}
+.ap-flow figcaption{font-size:.8rem;color:var(--muted);margin-top:.8rem;text-align:center}
+.ap-flow .bx{fill:var(--panel);stroke:var(--line);stroke-width:1}
+.ap-flow .bx2{fill:var(--signal-soft);stroke:var(--signal);stroke-width:1.5}
+.ap-flow .t{fill:var(--ink);font-family:"IBM Plex Sans Condensed",sans-serif;font-size:17px;font-weight:600}
+.ap-flow .s{fill:var(--muted);font-size:12.5px}
+.ap-flow .ar{stroke:var(--signal);stroke-width:2}
+.ap-flow .arh{fill:var(--signal)}
+.ap-flow .cap{fill:var(--faint);font-size:11.5px;letter-spacing:.04em;text-transform:uppercase}
+.ap-params{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.ap-pgroup{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem}
+.ap-pgroup h4{font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;margin:0 0 .6rem;color:var(--muted);display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
+.ap-pgroup h4 .c{color:var(--signal);font-weight:600}
+.ap-pgroup .tag{display:inline-block;font-size:.74rem;padding:.22rem .55rem;border-radius:20px;margin:.16rem .25rem .16rem 0;background:var(--soft);border:1px solid var(--line);color:var(--ink)}
+.ap-score{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin-bottom:.9rem}
+.ap-score .s{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.8rem .7rem;text-align:center}
+.ap-score .s b{display:block;font-family:"IBM Plex Sans Condensed",sans-serif;font-size:1.02rem}
+.ap-score .s span{display:block;font-size:.72rem;color:var(--muted);margin-top:.25rem;line-height:1.35}
+.ap-rule{background:var(--signal-soft);border:1px solid var(--signal);border-radius:10px;padding:.9rem 1.1rem;font-size:.9rem;color:var(--ink);line-height:1.55}
+.ap-loop{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}
+.ap-loop .l{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:1rem 1rem .95rem;position:relative}
+.ap-loop .l .k{position:absolute;top:.75rem;right:.85rem;font-size:.7rem;font-weight:600;color:var(--signal)}
+.ap-loop .l b{font-size:.92rem;display:block;padding-right:1.4rem}
+.ap-loop .l span{display:block;font-size:.79rem;color:var(--muted);margin-top:.3rem;line-height:1.5}
+.ap-foot{margin-top:2.4rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.8rem;color:var(--muted)}
+@media (max-width:900px){.ap-glance,.ap-score,.ap-loop{grid-template-columns:repeat(2,1fr)}.ap-params,.ap-grid2{grid-template-columns:1fr}}
 .runs h2{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-family:"IBM Plex Sans",sans-serif;font-weight:600;padding:1rem 1.2rem .4rem}
 .runlist{list-style:none;margin:0;padding:0 .6rem 1rem}
 .runbtn{display:block;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:6px;padding:.7rem .7rem .75rem;cursor:pointer;margin-bottom:.25rem}
@@ -205,20 +246,105 @@ footer{margin-top:2.5rem;font-size:.8rem;color:var(--muted)}
 <div class="app">
  <aside class="runs" aria-label="Audit runs">
   <div class="brand"><div class="eyebrow">IndiaMART · Voice QA</div><h1>Call Quality Audit</h1><p>Every run scored against the VANI Call Quality Matrix. Newest first.</p></div>
-  <div class="approach">
+  <a class="approach" href="#approach">
    <h3>Our approach</h3>
-   <dl>
-    <dt>What we audit</dt><dd>Every call handled by <b>Vani_voice_bot</b>, our buyer-side voice agent &mdash; scored against the 16-parameter VANI Call Quality Matrix.</dd>
-    <dt>How the data flows</dt><dd>Sarvam Voice Agent (recordings + transcripts) &rarr; <b>Cowork</b>, where this Call Log Analysis agent sits &rarr; scored runs &rarr; this dashboard.</dd>
-    <dt>What we check</dt><dd>Outcome, quantity &amp; unit capture, quantity probing, spec capture, missed opportunities, looping, WER, dead air, product/MCAT accuracy, ISQ errors and the OnCall AstBuy handover. Each parameter is Pass / Fatal / Non-fatal / N/A / Unscorable; the Overall Call verdict follows. Failures are grouped into root causes, each with a minimal prompt fix.</dd>
-    <dt>Cadence</dt><dd>Audit runs are scheduled weekly; each week is a tab in the list below.</dd>
-   </dl>
-  </div>
+   <p>Every Vani_voice_bot call, scored against the 16-parameter VANI Call Quality Matrix &mdash; then fixed.</p>
+   <span class="go">Read the full approach &rarr;</span>
+  </a>
   <h2>Runs</h2>
   <ul class="runlist" id="runlist"></ul>
   <div class="navfoot">Appended daily by the audit job. Each run keeps its own calls, matrix, root causes and prompt fixes.</div>
  </aside>
- <main id="main"><nav class="sub" id="subnav" aria-label="Sections"></nav><div class="wrap" id="view"></div></main>
+ <main id="main"><nav class="sub" id="subnav" aria-label="Sections"></nav><div class="wrap ap" id="approach">
+ <div class="eyebrow">How this audit works</div>
+ <h1>Our approach</h1>
+ <p class="lede">We audit every call handled by <b>Vani_voice_bot</b>, IndiaMART&rsquo;s buyer-side voice agent, against the 16-parameter VANI Call Quality Matrix &mdash; then turn the failures into prompt fixes that ship back to the bot.</p>
+
+ <div class="ap-glance">
+  <div class="g"><b>16</b><span>parameters scored on every call</span></div>
+  <div class="g"><b>Weekly</b><span>scheduled audit runs</span></div>
+  <div class="g"><b>100%</b><span>of calls in the window, not a sample</span></div>
+  <div class="g"><b>Audit &rarr; Fix</b><span>evidence to prompt diff, then tested</span></div>
+ </div>
+
+ <h2><span class="n">1</span> What we audit</h2>
+ <div class="ap-grid2">
+  <div class="ap-card"><h3>The agent under test</h3><p><b>Vani_voice_bot</b> &mdash; IndiaMART&rsquo;s buyer-side voice agent. Every call it handles in the audit window is in scope: inbound and outbound, across products, cities and languages.</p></div>
+  <div class="ap-card"><h3>What we look at</h3><p>The call log and the full transcript of each call: the buyer&rsquo;s stated requirement, what the agent captured, how it probed, where it looped or went silent, and how the handover to a seller fired.</p></div>
+ </div>
+
+ <h2><span class="n">2</span> How the data flows</h2>
+ <figure class="ap-flow">
+  <svg viewBox="0 0 920 150" role="img" aria-label="Sarvam Voice Agent produces call recordings and transcripts; they flow into Cowork, where the Call Log Analysis agent scores them; the result is this audit dashboard.">
+   <defs>
+    <marker id="arh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+     <path class="arh" d="M0 0 L10 5 L0 10 z"></path>
+    </marker>
+   </defs>
+   <text class="cap" x="128" y="26" text-anchor="middle">Source</text>
+   <text class="cap" x="462" y="26" text-anchor="middle">Processing</text>
+   <text class="cap" x="794" y="26" text-anchor="middle">Output</text>
+   <rect class="bx" x="8" y="40" width="240" height="94" rx="12"></rect>
+   <text class="t" x="128" y="72" text-anchor="middle">Sarvam Voice Agent</text>
+   <text class="s" x="128" y="96" text-anchor="middle">Vani_voice_bot</text>
+   <text class="s" x="128" y="115" text-anchor="middle">recordings + transcripts</text>
+   <line class="ar" x1="252" y1="87" x2="330" y2="87" marker-end="url(#arh)"></line>
+   <rect class="bx2" x="338" y="40" width="248" height="94" rx="12"></rect>
+   <text class="t" x="462" y="72" text-anchor="middle">Cowork</text>
+   <text class="s" x="462" y="96" text-anchor="middle">Call Log Analysis agent</text>
+   <text class="s" x="462" y="115" text-anchor="middle">scores 16 params per call</text>
+   <line class="ar" x1="590" y1="87" x2="668" y2="87" marker-end="url(#arh)"></line>
+   <rect class="bx" x="676" y="40" width="236" height="94" rx="12"></rect>
+   <text class="t" x="794" y="72" text-anchor="middle">Audit dashboard</text>
+   <text class="s" x="794" y="96" text-anchor="middle">weekly runs + fixes</text>
+   <text class="s" x="794" y="115" text-anchor="middle">published as an artifact</text>
+  </svg>
+  <figcaption>The bot&rsquo;s calls land as recordings and transcripts from the Sarvam Voice Agent; this agent in Cowork scores them and publishes the run here.</figcaption>
+ </figure>
+
+ <h2><span class="n">3</span> What we check &mdash; the 16 parameters</h2>
+ <div class="ap-params">
+  <div class="ap-pgroup">
+   <h4>Outcome &amp; product <span class="c">3</span></h4>
+   <span class="tag">Outcome Accuracy</span><span class="tag">Product Change / No Product Accuracy</span><span class="tag">MCAT / Search errors</span>
+  </div>
+  <div class="ap-pgroup">
+   <h4>Capture accuracy <span class="c">5</span></h4>
+   <span class="tag">Quantity Accuracy (Numeric)</span><span class="tag">Quantity Unit Accuracy</span><span class="tag">Spec1 Accuracy</span><span class="tag">Spec2 Accuracy</span><span class="tag">Additional_details</span>
+  </div>
+  <div class="ap-pgroup">
+   <h4>Missed opportunity <span class="c">3</span></h4>
+   <span class="tag">Quantity Probing Error</span><span class="tag">Qty Missed Opportunity</span><span class="tag">Spec Missed Opportunity</span>
+  </div>
+  <div class="ap-pgroup">
+   <h4>Conversation behaviour <span class="c">5</span></h4>
+   <span class="tag">Looping Behavior</span><span class="tag">WER</span><span class="tag">Category ISQ&rsquo;s Error</span><span class="tag">OnCall AstBuy Error</span><span class="tag">Dead air</span>
+  </div>
+ </div>
+
+ <h2><span class="n">4</span> How we score</h2>
+ <div class="ap-score">
+  <div class="s"><b style="color:var(--pass)">Pass</b><span>clean &mdash; no defect</span></div>
+  <div class="s"><b style="color:var(--fatal)">Fatal</b><span>breaks the call or the lead</span></div>
+  <div class="s"><b style="color:var(--nf)">Non-fatal</b><span>a defect that didn&rsquo;t break the call</span></div>
+  <div class="s"><b>N/A</b><span>the parameter did not apply</span></div>
+  <div class="s"><b style="color:var(--faint)">Unscorable</b><span>applied, but the data was missing</span></div>
+ </div>
+ <div class="ap-rule"><b>Overall Call verdict &mdash;</b> Fatal if any parameter is Fatal; Non-fatal if any is Non-fatal; otherwise Pass. A call whose verdict could have changed had an Unscorable parameter been known is marked <b>partial</b>.</div>
+
+ <h2><span class="n">5</span> What comes out</h2>
+ <div class="ap-loop">
+  <div class="l"><span class="k">Step 1</span><b>Audit</b><span>Every call scored against the matrix, each Fatal and Non-fatal tied to a call, a turn and a quote.</span></div>
+  <div class="l"><span class="k">Step 2</span><b>Group</b><span>Failures rolled into root causes, ranked by frequency &times; severity.</span></div>
+  <div class="l"><span class="k">Step 3</span><b>Fix</b><span>A minimal prompt diff drafted for each root cause.</span></div>
+  <div class="l"><span class="k">Step 4</span><b>Test</b><span>The fix is run against the bot&rsquo;s test suite before it ships to the draft.</span></div>
+ </div>
+
+ <h2><span class="n">6</span> Cadence</h2>
+ <p class="lede">Audit runs are scheduled weekly. Each week becomes its own tab in the run list, so a run can be compared against the one before it &mdash; the same calls, the same matrix, and the fixes that moved the numbers.</p>
+ <div class="ap-foot">Call Quality Audit &middot; VANI Call Quality Matrix &middot; weekly runs of Vani_voice_bot &middot; published to the <span class="mono">voice_bot_qa</span> repo.</div>
+</div>
+<div class="wrap" id="view"></div></main>
 </div>
 <script type="application/json" id="audit-data">/*__AUDIT_DATA__*/</script>
 <script>
@@ -287,7 +413,7 @@ function render(run){
  current=run;var c=counts(run),pr=prevRun(run),pc=pr?counts(pr):null,cov=coverage(run),pcov=pr?coverage(pr):null;
  var audited=run.calls.length-(c['Not analysed']||0),paud=pr?pr.calls.length-(pc['Not analysed']||0):null;
  var fixes=run.fixes||[],rcs=run.root_causes||[],tested=fixes.filter(function(f){return f.trail&&f.trail.tested}).length;
- var subs=[['overview','Overview'],['agreement','Agreement vs humans'],['issues','Root causes'],['fixes','Prompt fixes'],['queue','Review queue'],['calls','Calls'],['scorecard','Scorecard'],['matrix','Full matrix'],['transcripts','Transcripts']];
+ var subs=[['approach','Our approach'],['overview','Overview'],['agreement','Agreement vs humans'],['issues','Root causes'],['fixes','Prompt fixes'],['queue','Review queue'],['calls','Calls'],['scorecard','Scorecard'],['matrix','Full matrix'],['transcripts','Transcripts']];
  document.getElementById('subnav').innerHTML=subs.map(function(s){return '<a href="#'+s[0]+'">'+s[1]+'</a>'}).join('');
  var h='';
  /* overview */
@@ -379,7 +505,7 @@ function render(run){
  h+='</section>';
  h+='<footer class="pagefoot">Call Quality Audit &middot; VANI Call Quality Matrix &middot; '+RUNS.length+' run'+(RUNS.length>1?'s':'')+' in history &middot; generated '+esc(RUNS[0].generated_at)+'</footer>';
  document.getElementById('view').innerHTML=h;
- document.getElementById('main').scrollTop=0;window.scrollTo(0,0);
+ 
 }
 function vpill(c){var k={'Fatal':'F','Non-fatal':'N','Pass':'P','Not analysed':'X'}[c.verdict];return '<span class="pill p-'+k+'">'+esc(c.verdict)+(c.partial?' · partial':'')+'</span>'}
 function openTurn(ci,turn){var d=document.getElementById('tr-'+ci);if(!d)return;d.open=true;document.querySelectorAll('.turn.hl').forEach(function(x){x.classList.remove('hl')});
@@ -388,7 +514,7 @@ function openTurn(ci,turn){var d=document.getElementById('tr-'+ci);if(!d)return;
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
  var an=e.target.closest('a[href^="#"]');if(an){var tg=document.getElementById(an.getAttribute('href').slice(1));if(tg){e.preventDefault();tg.scrollIntoView({behavior:'smooth',block:'start'})}return}
- var rb=e.target.closest('.runbtn');if(rb){select(rb.dataset.run);return}
+ var rb=e.target.closest('.runbtn');if(rb){select(rb.dataset.run,true);return}
  var rr=e.target.closest('.rcrow');if(rr){var d=document.getElementById('rcd-'+rr.dataset.rc);var open=d.hidden;d.hidden=!open;rr.setAttribute('aria-expanded',String(open));return}
  var ev=e.target.closest('[data-call]');if(ev){openTurn(+ev.dataset.call,ev.dataset.turn?+ev.dataset.turn:null);return}
  var sb=e.target.closest('.seg button');if(sb){var fi=+sb.dataset.fix,f=current.fixes[fi],el=document.getElementById('diff-'+fi);
@@ -402,7 +528,7 @@ document.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' '
 function copy(t,btn){function ok(){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o},1300)}
  function fb(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(x){}document.body.removeChild(ta)}
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,fb);else fb()}
-function select(id){var run=RUNS.filter(function(r){return r.id===id})[0]||RUNS[0];renderNav(run.id);render(run);try{history.replaceState(null,'','#run='+encodeURIComponent(run.id))}catch(x){}}
+function select(id,toRun){var run=RUNS.filter(function(r){return r.id===id})[0]||RUNS[0];renderNav(run.id);render(run);if(toRun){var ov=document.getElementById('overview');if(ov)ov.scrollIntoView({behavior:'smooth',block:'start'})}try{history.replaceState(null,'','#run='+encodeURIComponent(run.id))}catch(x){}}
 var m=/run=([^&]+)/.exec(location.hash);select(m?decodeURIComponent(m[1]):RUNS[0].id);
 })();
 </script>
