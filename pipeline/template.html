@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ron — VANI Call Quality Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+ --ink:#17202A;--muted:#566270;--faint:#8792A0;--paper:#F3F5F7;--panel:#FFFFFF;--line:#D6DCE2;--soft:#ECEFF3;
+ --signal:#3346C8;--signal-soft:#E6E9FA;
+ --fatal:#BE3328;--fatal-soft:#FBE7E4;--nf:#A8670E;--nf-soft:#FBEFD9;--pass:#2C7A4B;--pass-soft:#E1F1E6;
+ --na:#EEF1F4;--unsc:#C9D0D8;--xna:#566270;
+ --del-bg:#FDECEA;--del-hl:#F5B9B1;--add-bg:#E6F4EA;--add-hl:#A9DDB9;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --ink:#E6EBF0;--muted:#9EAAB6;--faint:#748190;--paper:#11161C;--panel:#1A2129;--line:#2D3741;--soft:#222B34;
+ --signal:#8C9BFF;--signal-soft:#232A4A;--fatal:#F0857A;--fatal-soft:#3A2220;--nf:#E6B262;--nf-soft:#352A18;--pass:#7FCB9C;--pass-soft:#1C3326;
+ --na:#222B34;--unsc:#3A4552;--xna:#9EAAB6;--del-bg:#3A2220;--del-hl:#7A3A33;--add-bg:#1C3326;--add-hl:#2F6544;}}
+:root[data-theme="dark"]{
+ --ink:#E6EBF0;--muted:#9EAAB6;--faint:#748190;--paper:#11161C;--panel:#1A2129;--line:#2D3741;--soft:#222B34;
+ --signal:#8C9BFF;--signal-soft:#232A4A;--fatal:#F0857A;--fatal-soft:#3A2220;--nf:#E6B262;--nf-soft:#352A18;--pass:#7FCB9C;--pass-soft:#1C3326;
+ --na:#222B34;--unsc:#3A4552;--xna:#9EAAB6;--del-bg:#3A2220;--del-hl:#7A3A33;--add-bg:#1C3326;--add-hl:#2F6544;}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%}
+body{margin:0;height:100%;background:var(--paper);color:var(--ink);font:15.5px/1.55 "IBM Plex Sans","Noto Sans Devanagari",system-ui,-apple-system,sans-serif;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;line-height:1.15;margin:0}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+button{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:268px minmax(0,1fr);height:100%}
+/* run nav */
+.runs{border-right:1px solid var(--line);background:var(--panel);overflow-y:auto;display:flex;flex-direction:column}
+.brand{padding:1.3rem 1.2rem 1rem;border-bottom:1px solid var(--line)}
+.brand .eyebrow{font-size:.74rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.brand h1{font-size:1.35rem;margin-top:.25rem}
+.brand p{margin:.35rem 0 0;font-size:.84rem;color:var(--muted)}
+.runs h2{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-family:"IBM Plex Sans",sans-serif;font-weight:600;padding:1rem 1.2rem .4rem}
+.runlist{list-style:none;margin:0;padding:0 .6rem 1rem}
+.runbtn{display:block;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:6px;padding:.7rem .7rem .75rem;cursor:pointer;margin-bottom:.25rem}
+.runbtn:hover{background:var(--soft)}
+.runbtn[aria-current="true"]{background:var(--signal-soft);border-color:var(--signal)}
+.runbtn .ts{font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:600;font-size:1.02rem}
+.runbtn .lbl{font-size:.8rem;color:var(--muted);margin-top:.1rem}
+.mini{display:flex;height:6px;border-radius:3px;overflow:hidden;margin-top:.5rem;background:var(--soft)}
+.mini i{display:block;height:100%}
+.runbtn .cnt{font-size:.76rem;color:var(--muted);margin-top:.35rem}
+.navfoot{margin-top:auto;padding:1rem 1.2rem;border-top:1px solid var(--line);font-size:.78rem;color:var(--muted)}
+/* main */
+main{overflow-y:auto;min-width:0}
+.sub{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line);display:flex;gap:.25rem;overflow-x:auto;padding:.5rem clamp(1rem,3vw,2.2rem)}
+.sub a{white-space:nowrap;font-size:.85rem;color:var(--muted);text-decoration:none;padding:.3rem .6rem;border-radius:4px}
+.sub a:hover{background:var(--soft);color:var(--ink)}
+.wrap{padding:1.6rem clamp(1rem,3vw,2.2rem) 4rem;max-width:1240px}
+section{padding-top:2.4rem;scroll-margin-top:3rem}
+section:first-child{padding-top:0}
+section>h2{font-size:1.45rem;font-weight:700;margin-bottom:.35rem}
+.lede{color:var(--muted);max-width:78ch;margin:0 0 1rem}
+.runhead .ts{font-family:"IBM Plex Sans Condensed",sans-serif;font-size:clamp(1.8rem,3.5vw,2.5rem);font-weight:700;line-height:1.1}
+.runhead .meta{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;color:var(--muted);font-size:.88rem;margin:.5rem 0 .8rem}
+.runhead .summary{max-width:82ch;font-size:1.02rem;margin:0}
+.pill{display:inline-block;font-size:.75rem;font-weight:600;padding:.1rem .5rem;border-radius:999px;white-space:nowrap}
+.p-F{background:var(--fatal-soft);color:var(--fatal)}.p-N{background:var(--nf-soft);color:var(--nf)}.p-P{background:var(--pass-soft);color:var(--pass)}
+.p-A{background:var(--na);color:var(--muted)}.p-U{background:var(--soft);color:var(--muted);border:1px dashed var(--unsc)}.p-X{background:var(--soft);color:var(--xna)}
+.p-s{background:var(--signal-soft);color:var(--signal)}
+/* loop strip */
+.loop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:1.3rem 0 0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--panel)}
+.loop div{padding:.75rem .9rem;border-right:1px solid var(--line);position:relative}
+.loop div:last-child{border-right:0}
+.loop b{display:block;font-family:"IBM Plex Sans Condensed",sans-serif;font-size:1rem}
+.loop span{font-size:.82rem;color:var(--muted)}
+.loop .st{position:absolute;top:.75rem;right:.8rem}
+.loop div.done{box-shadow:inset 0 3px 0 var(--pass)} .loop div.pend{box-shadow:inset 0 3px 0 var(--nf)} .loop div.off{box-shadow:inset 0 3px 0 var(--unsc)}
+@media (max-width:760px){.loop{grid-template-columns:repeat(2,minmax(0,1fr))}.loop div:nth-child(2){border-right:0}.loop div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:.6rem;margin-top:1rem}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:.7rem .8rem}
+.kpi b{display:block;font-family:"IBM Plex Sans Condensed",sans-serif;font-size:1.7rem;line-height:1.1}
+.kpi .k{font-size:.8rem;color:var(--muted)}
+.kpi .d{font-size:.76rem;margin-top:.15rem;color:var(--muted)}
+.kpi.F b{color:var(--fatal)}.kpi.N b{color:var(--nf)}.kpi.P b{color:var(--pass)}
+.dist{display:flex;height:12px;border-radius:3px;overflow:hidden;margin:.9rem 0 .3rem;background:var(--soft)}
+.legend{display:flex;flex-wrap:wrap;gap:.3rem 1rem;font-size:.8rem;color:var(--muted)}
+.legend i{display:inline-block;width:.7rem;height:.7rem;border-radius:2px;margin-right:.3rem;vertical-align:-1px}
+/* panel metrics */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.6rem;margin-top:.6rem}
+.metric{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:.75rem .85rem}
+.metric .t{font-size:.8rem;color:var(--muted);font-weight:600}
+.metric .v{font-family:"IBM Plex Sans Condensed",sans-serif;font-size:1.25rem;font-weight:600;margin:.15rem 0}
+.metric .x{font-size:.82rem;color:var(--muted)}
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--panel);margin:.6rem 0 1rem}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{text-align:left;vertical-align:top;padding:.5rem .6rem;border-bottom:1px solid var(--line)}
+th{background:var(--soft);font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:600;font-size:.88rem;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.prio{display:flex;align-items:center;gap:.5rem;min-width:120px}
+.prio .bar{flex:1;height:8px;background:var(--soft);border-radius:4px;overflow:hidden}.prio .bar i{display:block;height:100%;background:var(--signal)}
+.rcrow{cursor:pointer}
+.rcrow:hover td{background:var(--soft)}
+.rcdetail td{background:var(--paper)}
+.rcdetail .why{max-width:90ch;margin:.1rem 0 .5rem}
+q.ev{display:block;quotes:none;border-left:3px solid var(--line);padding:.2rem .7rem;margin:.35rem 0;color:var(--ink)}
+.evlink{font-size:.78rem;color:var(--signal);cursor:pointer;background:none;border:0;padding:0;text-decoration:underline}
+.callout{background:var(--nf-soft);border-radius:6px;padding:.9rem 1.1rem;margin:1rem 0}
+.callout h3{font-size:1.02rem;margin-bottom:.4rem}
+.callout ul{margin:.2rem 0;padding-left:1.15rem}.callout li{margin:.3rem 0}
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:6px;padding:1rem 1.1rem;color:var(--muted)}
+/* fixes & diff */
+.fix{background:var(--panel);border:1px solid var(--line);border-radius:6px;margin:1rem 0 1.4rem;overflow:hidden}
+.fix header{padding:.85rem 1rem;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:baseline}
+.fix header h3{font-size:1.12rem}
+.fix .sec{font-size:.82rem;color:var(--muted)}
+.fix .note{padding:.6rem 1rem;font-size:.86rem;background:var(--signal-soft)}
+.dtool{display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.5rem 1rem;border-bottom:1px solid var(--line);font-size:.82rem;color:var(--muted);flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.seg button{border:0;background:var(--panel);padding:.25rem .65rem;font-size:.8rem;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--signal-soft);color:var(--signal);font-weight:600}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:4px;padding:.25rem .65rem;font-size:.8rem;cursor:pointer;color:var(--signal);font-weight:600}
+.btn:hover{background:var(--signal-soft)}
+.diff{overflow-x:auto}
+.diff table{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.78rem;line-height:1.5;table-layout:fixed;min-width:640px}
+.diff td{border:0;padding:.12rem .5rem;white-space:pre-wrap;word-break:break-word;vertical-align:top}
+.diff td.ln{width:2.6rem;text-align:right;color:var(--faint);user-select:none;padding-right:.6rem}
+.diff td.sg{width:1.2rem;color:var(--faint);user-select:none;padding:0 .2rem}
+.diff tr.hh td{background:var(--soft);color:var(--muted);font-size:.74rem;padding:.25rem .6rem}
+.diff .del{background:var(--del-bg)} .diff .add{background:var(--add-bg)}
+.diff .del mark{background:var(--del-hl);color:inherit;border-radius:2px;text-decoration:line-through;text-decoration-color:var(--fatal)}
+.diff .add mark{background:var(--add-hl);color:inherit;border-radius:2px}
+.diff .emp{background:repeating-linear-gradient(45deg,transparent 0 6px,var(--soft) 6px 12px)}
+.diff.split td.mid{border-left:1px solid var(--line)}
+.fixfoot{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:0;border-top:1px solid var(--line)}
+.fixfoot>div{padding:.85rem 1rem}
+.fixfoot>div+div{border-left:1px solid var(--line)}
+.fixfoot h4{margin:0 0 .35rem;font-size:.9rem;font-family:"IBM Plex Sans Condensed",sans-serif}
+.fixfoot p{margin:.2rem 0 .5rem;font-size:.86rem}
+.fixfoot ul{margin:.2rem 0;padding-left:1.1rem;font-size:.86rem}
+@media (max-width:820px){.fixfoot{grid-template-columns:minmax(0,1fr)}.fixfoot>div+div{border-left:0;border-top:1px solid var(--line)}}
+.trail{list-style:none;margin:.3rem 0 0;padding:0}
+.trail li{position:relative;padding:0 0 .6rem 1.3rem;font-size:.84rem}
+.trail li::before{content:"";position:absolute;left:.25rem;top:.4rem;width:.55rem;height:.55rem;border-radius:50%;background:var(--unsc)}
+.trail li.ok::before{background:var(--pass)}
+.trail li::after{content:"";position:absolute;left:.48rem;top:1rem;bottom:-.1rem;width:1px;background:var(--line)}
+.trail li:last-child::after{display:none}
+.trail .w{color:var(--muted)}
+/* matrix */
+.mx{border-collapse:separate;border-spacing:0}
+.mx th,.mx td{border-bottom:1px solid var(--line)}
+.mx th.pn,.mx td.pn{position:sticky;left:0;background:var(--panel);z-index:1;min-width:210px;max-width:240px;white-space:normal;border-right:1px solid var(--line)}
+.mx th.pn{background:var(--soft)}
+.mx td.pn small{display:block;color:var(--muted);font-size:.74rem;line-height:1.3}
+.mx th.ch{font-size:.76rem;text-align:center;min-width:86px;white-space:normal;line-height:1.25}
+.cell{display:block;width:100%;min-height:2rem;border:0;border-radius:3px;font-size:.74rem;font-weight:600;cursor:pointer;padding:.3rem .2rem;text-align:center}
+.c-P{background:var(--pass-soft);color:var(--pass)}.c-F{background:var(--fatal);color:#fff}.c-N{background:var(--nf-soft);color:var(--nf);box-shadow:inset 0 0 0 1.5px var(--nf)}
+.c-A{background:var(--na);color:var(--faint)}.c-U{background:repeating-linear-gradient(135deg,var(--soft) 0 4px,transparent 4px 8px);color:var(--muted);box-shadow:inset 0 0 0 1px var(--unsc)}
+.c-X{background:var(--soft);color:var(--xna)}
+tr.overall td{background:var(--soft);font-weight:600}
+.cellinfo{margin:.6rem 0 0;padding:.7rem .9rem;border-radius:6px;background:var(--panel);border:1px solid var(--line);font-size:.88rem;min-height:2.6rem}
+/* queue & calls */
+.flag{display:inline-block;font-size:.72rem;font-weight:600;padding:.05rem .4rem;border-radius:3px;margin:0 .2rem .2rem 0;background:var(--soft);color:var(--muted)}
+.flag.frustration,.flag.wrong_requirement{background:var(--fatal-soft);color:var(--fatal)}
+.flag.loop,.flag.human_request{background:var(--nf-soft);color:var(--nf)}
+.rbar{width:80px;height:8px;background:var(--soft);border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:.4rem}.rbar i{display:block;height:100%;background:var(--fatal)}
+.linkish{color:var(--signal);cursor:pointer;background:none;border:0;padding:0;font-weight:600;text-align:left}
+.sim{font-size:.72rem;color:var(--muted)}
+/* transcripts */
+details.tr{background:var(--panel);border:1px solid var(--line);border-radius:6px;margin:.5rem 0}
+details.tr summary{cursor:pointer;padding:.6rem .9rem;font-size:.9rem;display:flex;flex-wrap:wrap;gap:.3rem .8rem;align-items:center}
+.turns{padding:.2rem .9rem .8rem;max-height:520px;overflow-y:auto}
+.turn{display:grid;grid-template-columns:2.2rem 3.6rem minmax(0,1fr);gap:.4rem;padding:.3rem .3rem;border-radius:4px;font-size:.9rem}
+.turn .n{color:var(--faint);font-size:.76rem;text-align:right;padding-top:.15rem}
+.turn .who{font-size:.74rem;font-weight:600;padding-top:.15rem;color:var(--muted)}
+.turn.agent .who{color:var(--signal)}
+.turn.hl{background:var(--nf-soft);box-shadow:inset 3px 0 0 var(--nf)}
+/* method */
+.method{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1rem 1.2rem}
+.method h3{font-size:1.02rem;margin:1rem 0 .35rem}.method h3:first-child{margin-top:0}
+.method p,.method li{font-size:.9rem;max-width:90ch}
+.method ul{padding-left:1.15rem;margin:.2rem 0}
+footer{margin-top:2.5rem;font-size:.8rem;color:var(--muted)}
+@media (max-width:900px){
+ .app{grid-template-columns:minmax(0,1fr);height:auto}
+ body{height:auto}
+ .runs{border-right:0;border-bottom:1px solid var(--line)}
+ .runlist{display:flex;gap:.4rem;overflow-x:auto;padding-bottom:.8rem}
+ .runlist li{flex:0 0 220px}
+ .navfoot{display:none}
+ main{overflow:visible}
+}
+</style>
+</head>
+<body>
+<div class="app">
+ <aside class="runs" aria-label="Audit runs">
+  <div class="brand"><div class="eyebrow">IndiaMART · Voice QA</div><h1>Ron — Call Quality Audit</h1><p>Every run scored against the VANI Call Quality Matrix. Newest first.</p></div>
+  <h2>Runs</h2>
+  <ul class="runlist" id="runlist"></ul>
+  <div class="navfoot">Appended daily by the audit job. Each run keeps its own calls, matrix, root causes and prompt fixes.</div>
+ </aside>
+ <main id="main"><nav class="sub" id="subnav" aria-label="Sections"></nav><div class="wrap" id="view"></div></main>
+</div>
+<script type="application/json" id="audit-data">/*__AUDIT_DATA__*/</script>
+<script>
+(function(){
+var D=JSON.parse(document.getElementById('audit-data').textContent);
+var PARAMS=D.params, RUNS=D.runs.slice().sort(function(a,b){return a.generated_at<b.generated_at?1:-1});
+var SNAME={P:'Pass',F:'Fatal',N:'Non-fatal',A:'N/A',U:'Unscorable',X:'Not analysed'};
+var VCOL={'Fatal':'var(--fatal)','Non-fatal':'var(--nf)','Pass':'var(--pass)','Not analysed':'var(--unsc)'};
+var FLAGW={wrong_requirement:.35,frustration:.2,loop:.15,low_confidence:.15,human_request:.15,incomplete_call:.1,language:.1};
+var FLAGL={wrong_requirement:'wrong requirement',frustration:'frustration',loop:'loop',low_confidence:'low confidence',human_request:'human request',incomplete_call:'incomplete call',language:'language'};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function fmtTs(s){var m=/^(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2})/.exec(s);if(!m)return esc(s);var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1];return (+m[3])+' '+mo+' '+m[1]+' · '+m[4]}
+function counts(run){var c={'Fatal':0,'Non-fatal':0,'Pass':0,'Not analysed':0,partial:0};run.calls.forEach(function(x){c[x.verdict]=(c[x.verdict]||0)+1;if(x.partial)c.partial++});return c}
+function coverage(run){var sc=0,ap=0;run.calls.forEach(function(c){PARAMS.forEach(function(p){var s=(c.cells[p[0]]||{}).s;if(s&&s!=='A'){ap++;if(s==='P'||s==='F'||s==='N')sc++}})});return ap?Math.round(100*sc/ap):0}
+function callLabel(c){return c.cid+' · '+c.time}
+function distBar(c,n,h){var o='';['Fatal','Non-fatal','Pass','Not analysed'].forEach(function(k){if(c[k])o+='<i style="flex:'+c[k]+';background:'+VCOL[k]+'" title="'+k+': '+c[k]+'"></i>'});return o}
+
+/* ---------- nav ---------- */
+function renderNav(active){
+ var ul=document.getElementById('runlist');ul.innerHTML='';
+ RUNS.forEach(function(r){var c=counts(r);var li=document.createElement('li');
+  li.innerHTML='<button class="runbtn" aria-current="'+(r.id===active)+'" data-run="'+esc(r.id)+'"><div class="ts">'+fmtTs(r.generated_at)+'</div><div class="lbl">'+esc(r.label)+'</div><div class="mini">'+distBar(c)+'</div><div class="cnt">'+r.calls.length+' calls · '+(c['Fatal']||0)+' F · '+(c['Non-fatal']||0)+' NF · '+(c['Pass']||0)+' P'+(c['Not analysed']?' · '+c['Not analysed']+' not analysed':'')+'</div></button>';
+  ul.appendChild(li)});
+}
+/* ---------- diff ---------- */
+function lcs(a,b){var n=a.length,m=b.length,dp=[];for(var i=0;i<=n;i++){dp.push(new Array(m+1).fill(0))}
+ for(i=n-1;i>=0;i--)for(var j=m-1;j>=0;j--)dp[i][j]=a[i]===b[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+ var ops=[];i=0;j=0;while(i<n&&j<m){if(a[i]===b[j]){ops.push(['=',a[i],b[j]]);i++;j++}else if(dp[i+1][j]>=dp[i][j+1]){ops.push(['-',a[i]]);i++}else{ops.push(['+',null,b[j]]);j++}}
+ while(i<n)ops.push(['-',a[i++]]);while(j<m)ops.push(['+',null,b[j++]]);return ops}
+function wordDiff(a,b){var ta=a.split(/(\s+)/),tb=b.split(/(\s+)/),ops=lcs(ta,tb),L='',R='';
+ ops.forEach(function(o){if(o[0]==='=' ){L+=esc(o[1]);R+=esc(o[2])}else if(o[0]==='-')L+='<mark>'+esc(o[1])+'</mark>';else R+='<mark>'+esc(o[2])+'</mark>'});
+ return [L.replace(/<\/mark><mark>/g,''),R.replace(/<\/mark><mark>/g,'')]}
+function diffRows(before,after){
+ var a=before.split('\n'),b=after.split('\n'),ops=lcs(a,b),rows=[],k=0,ln=0,rn=0;
+ while(k<ops.length){var o=ops[k];
+  if(o[0]==='='){ln++;rn++;rows.push({t:'=',l:esc(o[1]),r:esc(o[2]),ln:ln,rn:rn});k++;continue}
+  var dels=[],adds=[];while(k<ops.length&&ops[k][0]!=='='){if(ops[k][0]==='-')dels.push(ops[k][1]);else adds.push(ops[k][2]);k++}
+  var mx=Math.max(dels.length,adds.length);
+  for(var q=0;q<mx;q++){var d=dels[q],ad=adds[q],L=null,R=null;
+   if(d!=null&&ad!=null){var w=wordDiff(d,ad);L=w[0];R=w[1]}else{if(d!=null)L='<mark>'+esc(d)+'</mark>';if(ad!=null)R='<mark>'+esc(ad)+'</mark>'}
+   if(d!=null&&d.trim()==='')L=esc(d); if(ad!=null&&ad.trim()==='')R=esc(ad);
+   rows.push({t:'x',l:L,r:R,ln:d!=null?++ln:'',rn:ad!=null?++rn:''})}}
+ return rows}
+function renderDiff(hunks){
+ var h='<table><colgroup><col style="width:2.8rem"><col style="width:1.3rem"><col><col style="width:2.8rem"><col style="width:1.3rem"><col></colgroup>';
+ hunks.forEach(function(hk,hi){var rows=diffRows(hk.before,hk.after);
+  h+='<tr class="hh"><td colspan="6">Change '+(hi+1)+' of '+hunks.length+'</td></tr>';
+  rows.forEach(function(r){if(r.t==='='){h+='<tr><td class="ln">'+r.ln+'</td><td class="sg"></td><td class="code">'+r.l+'</td><td class="ln mid">'+r.rn+'</td><td class="sg"></td><td class="code">'+r.r+'</td></tr>';return}
+   var L=r.l!=null,R=r.r!=null;
+   h+='<tr><td class="ln '+(L?'del':'emp')+'">'+r.ln+'</td><td class="sg '+(L?'del':'emp')+'">'+(L?'\u2212':'')+'</td><td class="code '+(L?'del':'emp')+'">'+(L?r.l:'')+'</td><td class="ln mid '+(R?'add':'emp')+'">'+r.rn+'</td><td class="sg '+(R?'add':'emp')+'">'+(R?'+':'')+'</td><td class="code '+(R?'add':'emp')+'">'+(R?r.r:'')+'</td></tr>'})});
+ return h+'</table>'}
+function renderUnified(hunks){var h='<table><colgroup><col style="width:2.8rem"><col style="width:2.8rem"><col style="width:1.3rem"><col></colgroup>';
+ hunks.forEach(function(hk,hi){var rows=diffRows(hk.before,hk.after);h+='<tr class="hh"><td colspan="4">Change '+(hi+1)+' of '+hunks.length+'</td></tr>';
+  var i=0;while(i<rows.length){var r=rows[i];if(r.t==='='){h+='<tr><td class="ln">'+r.ln+'</td><td class="ln">'+r.rn+'</td><td class="sg"></td><td>'+r.l+'</td></tr>';i++;continue}
+   var blk=[];while(i<rows.length&&rows[i].t!=='='){blk.push(rows[i]);i++}
+   blk.forEach(function(x){if(x.l!=null)h+='<tr class="del"><td class="ln">'+x.ln+'</td><td class="ln"></td><td class="sg">−</td><td>'+x.l+'</td></tr>'});
+   blk.forEach(function(x){if(x.r!=null)h+='<tr class="add"><td class="ln"></td><td class="ln">'+x.rn+'</td><td class="sg">+</td><td>'+x.r+'</td></tr>'})}});
+ return h+'</table>'}
+function hunksOf(f){var hs=[{before:f.before,after:f.after}];if(f.before2)hs.push({before:f.before2,after:f.after2});return hs}
+
+/* ---------- view ---------- */
+var current=null;
+function prevRun(run){var i=RUNS.indexOf(run);return RUNS[i+1]||null}
+function delta(a,b,suffix,goodUp){if(b==null)return '';var d=a-b;if(d===0)return '<div class="d">no change vs previous run</div>';var s=(d>0?'+':'')+d+(suffix||'');return '<div class="d">'+s+' vs previous run</div>'}
+function render(run){
+ current=run;var c=counts(run),pr=prevRun(run),pc=pr?counts(pr):null,cov=coverage(run),pcov=pr?coverage(pr):null;
+ var audited=run.calls.length-(c['Not analysed']||0),paud=pr?pr.calls.length-(pc['Not analysed']||0):null;
+ var fixes=run.fixes||[],rcs=run.root_causes||[],tested=fixes.filter(function(f){return f.trail&&f.trail.tested}).length;
+ var subs=[['overview','Overview'],['agreement','Agreement vs humans'],['issues','Root causes'],['fixes','Prompt fixes'],['queue','Review queue'],['calls','Calls'],['scorecard','Scorecard'],['matrix','Full matrix'],['transcripts','Transcripts'],['method','Method & limitations']];
+ document.getElementById('subnav').innerHTML=subs.map(function(s){return '<a href="#'+s[0]+'">'+s[1]+'</a>'}).join('');
+ var h='';
+ /* overview */
+ h+='<section id="overview" class="runhead"><div class="ts">Run · '+fmtTs(run.generated_at)+'</div><div class="meta"><span><b>Ruleset:</b> '+esc(run.label)+'</span><span><b>Window:</b> '+esc(run.window.start)+' → '+esc(run.window.end)+'</span><span><b>Agent:</b> '+esc(run.agent)+'</span><span><b>Calls:</b> '+run.calls.length+'</span></div><p class="summary">'+esc(run.summary)+'</p>';
+ h+='<div class="loop"><div class="done"><b>Audit</b><span>'+audited+' of '+run.calls.length+' calls graded</span></div>'+
+  '<div class="'+(rcs.length?'done':'off')+'"><b>Issues</b><span>'+(rcs.length?rcs.length+' root causes ranked':'not part of this run')+'</span></div>'+
+  '<div class="'+(fixes.length?'done':'off')+'"><b>Fix</b><span>'+(fixes.length?fixes.length+' prompt diffs drafted':'not part of this run')+'</span></div>'+
+  '<div class="'+(fixes.length?(tested===fixes.length?'done':'pend'):'off')+'"><b>Test</b><span>'+(fixes.length?tested+' of '+fixes.length+' fixes tested':'not part of this run')+'</span></div></div>';
+ h+='<div class="kpis">'+
+  '<div class="kpi"><b>'+run.calls.length+'</b><div class="k">Calls examined</div>'+delta(run.calls.length,pr?pr.calls.length:null)+'</div>'+
+  '<div class="kpi"><b>'+Math.round(100*audited/run.calls.length)+'%</b><div class="k">Calls audited ('+audited+'/'+run.calls.length+')</div>'+delta(audited,paud,' calls')+'</div>'+
+  '<div class="kpi F"><b>'+(c['Fatal']||0)+'</b><div class="k">Fatal</div>'+delta(c['Fatal']||0,pc?pc['Fatal']||0:null)+'</div>'+
+  '<div class="kpi N"><b>'+(c['Non-fatal']||0)+'</b><div class="k">Non-fatal</div>'+delta(c['Non-fatal']||0,pc?pc['Non-fatal']||0:null)+'</div>'+
+  '<div class="kpi P"><b>'+(c['Pass']||0)+'</b><div class="k">Pass</div>'+delta(c['Pass']||0,pc?pc['Pass']||0:null)+'</div>'+
+  '<div class="kpi"><b>'+(run.legacy?'—':c.partial)+'</b><div class="k">Partial audits</div><div class="d">'+(run.legacy?'not tracked by v1 rules':'verdicts with unscorable parameters')+'</div></div>'+
+  '<div class="kpi"><b>'+cov+'%</b><div class="k">Matrix coverage</div>'+delta(cov,pcov,' pts')+'</div></div>';
+ h+='<div class="dist">'+distBar(c)+'</div><div class="legend"><span><i style="background:var(--fatal)"></i>Fatal</span><span><i style="background:var(--nf)"></i>Non-fatal</span><span><i style="background:var(--pass)"></i>Pass</span><span><i style="background:var(--unsc)"></i>Not analysed</span><span>Matrix coverage = scored parameter cells ÷ applicable cells</span></div>';
+ var ttf=fixes.length?(tested?'see trail':'Issue → diff in the same run; test pending'):'—';
+ h+='<h2 style="font-size:1.1rem;margin-top:1.6rem">Success metrics</h2><div class="metrics">'+
+  '<div class="metric"><div class="t">Agreement with human auditors</div><div class="v">'+(run.agreement?Math.round(100*run.agreement.overall.rate)+'%':'Not measured')+'</div><div class="x">'+(run.agreement?(run.agreement.overall.matched+' of '+run.agreement.overall.compared+' scored cells match the human label.'):'No human labels for this window yet.')+'</div></div>'+
+  '<div class="metric"><div class="t">Share of calls audited</div><div class="v">'+Math.round(100*audited/run.calls.length)+'%</div><div class="x">vs a manual sample today.</div></div>'+
+  '<div class="metric"><div class="t">Root-cause grouping</div><div class="v">'+(rcs.length?rcs.length+' ranked':'—')+'</div><div class="x">'+(rcs.length?'Frequency × severity, evidence-linked.':'Not part of this run.')+'</div></div>'+
+  '<div class="metric"><div class="t">Failure drop after fix</div><div class="v">'+(fixes.length?(tested?'See fixes':'Pending'):'—')+'</div><div class="x">'+(fixes.length?'Test cases are defined for each fix.':'No fixes in this run.')+'</div></div>'+
+  '<div class="metric"><div class="t">Time from issue to tested fix</div><div class="v">'+(fixes.length?(tested?'See trail':'Pending'):'—')+'</div><div class="x">'+esc(ttf)+'</div></div></div>';
+ h+='</section>';
+ /* agreement vs human labels */
+ if(run.agreement){var ag=run.agreement;var ov=ag.overall||{matched:0,compared:0,rate:0};
+  h+='<section id="agreement"><h2>Agreement with human auditors</h2><p class="lede">The agent scored these calls independently; this compares its cell verdicts with the human labels. Agreement counts cells where both gave the same Pass / Fatal / Non-fatal / N/A — Unscorable and Not-analysed cells are outside the denominator.</p>';
+  h+='<div class="kpis"><div class="kpi"><b>'+Math.round(100*ov.rate)+'%</b><div class="k">Overall agreement</div><div class="d">'+ov.matched+' of '+ov.compared+' scored cells</div></div><div class="kpi"><b>'+((ag.disagreements||[]).length)+'</b><div class="k">Disagreements</div><div class="d">cells flagged for review</div></div></div>';
+  if((ag.by_parameter||[]).length){h+='<div class="tw"><table><tr><th>Parameter</th><th class="num">Compared</th><th class="num">Agree</th><th class="num">Agent-only fail</th><th class="num">Human-only fail</th><th class="num">Agreement</th></tr>';
+   ag.by_parameter.forEach(function(p){h+='<tr><td>'+esc(p.name)+'</td><td class="num">'+p.compared+'</td><td class="num">'+p.agree+'</td><td class="num" style="color:var(--fatal)">'+p.agent_only_fail+'</td><td class="num" style="color:var(--nf)">'+p.human_only_fail+'</td><td class="num">'+Math.round(100*p.rate)+'%</td></tr>'});
+   h+='</table></div>'}
+  if((ag.confusion||[]).length){h+='<h3 style="margin-top:1.2rem">Confusion (agent × human)</h3><div class="tw"><table><tr><th>Agent</th><th>Human</th><th class="num">Cells</th></tr>';
+   ag.confusion.forEach(function(x){h+='<tr><td>'+esc(x.agent)+'</td><td>'+esc(x.human)+'</td><td class="num">'+x.n+'</td></tr>'});h+='</table></div>'}
+  if((ag.disagreements||[]).length){h+='<h3 style="margin-top:1.2rem">Disagreements to review</h3><div class="tw"><table><tr><th>Call</th><th>Parameter</th><th>Agent</th><th>Human</th><th>Note</th></tr>';
+   ag.disagreements.forEach(function(x){var cc=run.calls[x.call];h+='<tr><td><button class="linkish" data-call="'+x.call+'">'+esc(cc?callLabel(cc):String(x.call))+'</button></td><td>'+esc(x.parameter)+'</td><td>'+esc(x.agent)+'</td><td>'+esc(x.human)+'</td><td>'+esc(x.note||'')+'</td></tr>'});h+='</table></div>'}
+  h+='</section>'}
+ /* root causes */
+ h+='<section id="issues"><h2>Root causes</h2>';
+ if(!rcs.length){h+='<div class="empty">This run did not group failures into root causes.</div>'}
+ else{h+='<p class="lede">Ranked by priority = 100 × share of calls affected × severity (Fatal 1.0, Non-fatal 0.3, observation only 0.15, +0.3 when the buyer showed frustration). Click a row for the reasoning and evidence.</p><div class="tw"><table><tr><th>#</th><th>Root cause</th><th>Layer</th><th>Matrix parameter</th><th class="num">Calls</th><th>Priority</th><th>Fix</th></tr>';
+  var mxp=Math.max.apply(null,rcs.map(function(r){return r.priority}));
+  rcs.forEach(function(r,i){var fx=fixes.filter(function(f){return f.rc===r.id})[0];
+   h+='<tr class="rcrow" data-rc="'+r.id+'" tabindex="0" aria-expanded="false"><td>'+(i+1)+'</td><td><b>'+esc(r.title)+'</b></td><td><span class="pill p-s">'+esc(r.layer)+'</span></td><td>'+esc(r.param)+'</td><td class="num">'+r.calls.length+' / '+run.calls.length+'</td><td><div class="prio"><span class="bar"><i style="width:'+(100*r.priority/mxp)+'%"></i></span><span>'+r.priority+'</span></div></td><td>'+(fx?'<a href="#fix-'+r.id+'">Diff →</a>':'<span class="sim">no prompt fix</span>')+'</td></tr>';
+   h+='<tr class="rcdetail" id="rcd-'+r.id+'" hidden><td></td><td colspan="6"><p class="why">'+esc(r.why)+'</p><div class="sim">Prompt section: '+esc(r.section)+' · Code: '+esc(r.code)+'</div>'+
+    r.evidence.map(function(e){var cc=run.calls[e.call];return '<q class="ev">'+esc(e.quote)+'</q><button class="evlink" data-call="'+e.call+'" data-turn="'+e.turn+'">'+esc(callLabel(cc))+', turn '+e.turn+'</button>'}).join('')+'</td></tr>'});
+  h+='</table></div>'}
+ if((run.blockers||[]).length){h+='<div class="callout"><h3>Audit blockers (fix the data, not the prompt)</h3><ul>'+run.blockers.map(function(b){return '<li><b>'+esc(b.title)+'.</b> '+esc(b.detail)+'</li>'}).join('')+'</ul></div>'}
+ h+='</section>';
+ /* fixes */
+ h+='<section id="fixes"><h2>Prompt fixes</h2>';
+ if(!fixes.length)h+='<div class="empty">No prompt fixes were proposed in this run.</div>';
+ else{h+='<p class="lede">Each change is a minimal edit to the current instruction. The left side is the text as it is today, copied exactly from the prompt; the right side is the proposed text. Highlighted words are what actually changes.</p>';
+  fixes.forEach(function(f,fi){var t=f.trail||{};var steps=[['Issue found',t.found],['Diff drafted',t.drafted],['Approved by owner',t.approved],['Tested on Sarvam Tests',t.tested]];
+   h+='<article class="fix" id="fix-'+f.rc+'"><header><span class="pill p-s">'+esc(f.rc)+'</span><h3>'+esc(f.title)+'</h3><span class="sec">'+esc(f.section)+'</span></header>'+(f.note?'<div class="note">'+esc(f.note)+'</div>':'')+
+    '<div class="dtool"><span>'+hunksOf(f).length+' change'+(hunksOf(f).length>1?'s':'')+' in the instruction</span><span style="display:flex;gap:.5rem;align-items:center"><span class="seg" role="group" aria-label="Diff view"><button data-fix="'+fi+'" data-mode="split" aria-pressed="true">Side by side</button><button data-fix="'+fi+'" data-mode="unified" aria-pressed="false">Unified</button></span><button class="btn" data-copyfix="'+fi+'">Copy new text</button></span></div>'+
+    '<div class="diff split" id="diff-'+fi+'">'+renderDiff(hunksOf(f))+'</div>'+
+    '<div class="fixfoot"><div><h4>Test case (Sarvam Tests)</h4><p><b>'+esc(f.test.name)+'</b></p><p>'+esc(f.test.scenario)+'</p><ul>'+f.test.expected.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div>'+
+    '<div><h4>Audit → fix → test trail</h4><ul class="trail">'+steps.map(function(s){return '<li class="'+(s[1]?'ok':'')+'"><b>'+s[0]+'</b><br><span class="w">'+(s[1]?esc(fmtTs(s[1])):'Pending')+'</span></li>'}).join('')+'</ul>'+
+    (f.result?'<p><b>Result:</b> '+esc(f.result)+'</p>':'<p class="sim">Before/after failure rate appears here once the test suite has run on the baseline and the patched agent version.</p>')+'</div></div></article>'})}
+ h+='</section>';
+ /* queue */
+ var q=run.calls.map(function(c,i){var s=0;(c.flags||[]).forEach(function(f){s+=FLAGW[f]||0});return {c:c,i:i,s:Math.min(1,s)}}).filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s});
+ h+='<section id="queue"><h2>Review queue</h2><p class="lede">Calls flagged for a human: wrong requirement, frustration, loops, low confidence, human request, plus incomplete calls and language mismatches. Risk = sum of flag weights (wrong requirement .35, frustration .2, loop / low confidence / human request .15, incomplete call / language .10).</p>';
+ if(!q.length)h+='<div class="empty">No flags were computed for this run.</div>';
+ else{h+='<div class="tw"><table><tr><th>Call</th><th>Risk</th><th>Flags</th><th>Verdict</th><th>Why a human should look</th></tr>';
+  q.forEach(function(x){h+='<tr><td><button class="linkish" data-call="'+x.i+'">'+esc(callLabel(x.c))+'</button></td><td class="num"><span class="rbar"><i style="width:'+(100*x.s)+'%"></i></span>'+x.s.toFixed(2)+'</td><td>'+(x.c.flags||[]).map(function(f){return '<span class="flag '+f+'">'+esc(FLAGL[f]||f)+'</span>'}).join('')+'</td><td>'+vpill(x.c)+'</td><td>'+esc(x.c.note)+'</td></tr>'});
+  h+='</table></div>'}
+ h+='</section>';
+ /* calls */
+ h+='<section id="calls"><h2>Calls</h2><div class="tw"><table><tr><th>Call</th><th class="num">Dur (s)</th><th>Product heard</th><th>Intent</th><th>Language</th><th>Verdict</th><th>Notes</th></tr>';
+ run.calls.forEach(function(c,i){h+='<tr><td><button class="linkish" data-call="'+i+'">'+esc(callLabel(c))+'</button>'+(c.simulated?'<div class="sim">likely simulated</div>':'')+'</td><td class="num">'+c.dur+'</td><td>'+esc(c.product)+'</td><td>'+esc(c.intent)+'</td><td>'+esc(c.lang)+'</td><td>'+vpill(c)+'</td><td>'+esc(c.note)+(c.observations&&c.observations.length?'<div class="sim">'+c.observations.map(esc).join(' · ')+'</div>':'')+'</td></tr>'});
+ h+='</table></div></section>';
+ /* scorecard */
+ h+='<section id="scorecard"><h2>Parameter scorecard</h2><p class="lede">Fail rate = (Fatal + Non-fatal) ÷ calls where the parameter applied and could be scored. N/A and Unscorable are counted separately so the denominator is always visible.</p><div class="tw"><table><tr><th>Parameter</th><th class="num">Pass</th><th class="num">Fatal</th><th class="num">Non-fatal</th><th class="num">N/A</th><th class="num">Unscorable</th>'+(c['Not analysed']?'<th class="num">Not analysed</th>':'')+'<th class="num">Fail rate</th></tr>';
+ PARAMS.forEach(function(p){var k={P:0,F:0,N:0,A:0,U:0,X:0};run.calls.forEach(function(cc){var s=(cc.cells[p[0]]||{}).s;if(s)k[s]++});var den=k.P+k.F+k.N;
+  h+='<tr><td>'+esc(p[1])+'</td><td class="num">'+k.P+'</td><td class="num" style="color:var(--fatal);font-weight:'+(k.F?600:400)+'">'+k.F+'</td><td class="num" style="color:var(--nf);font-weight:'+(k.N?600:400)+'">'+k.N+'</td><td class="num">'+k.A+'</td><td class="num">'+k.U+'</td>'+(c['Not analysed']?'<td class="num">'+k.X+'</td>':'')+'<td class="num">'+(den?Math.round(100*(k.F+k.N)/den)+'% <span class="sim">('+(k.F+k.N)+'/'+den+')</span>':'<span class="sim">no scored calls</span>')+'</td></tr>'});
+ h+='</table></div></section>';
+ /* matrix */
+ h+='<section id="matrix"><h2>Full matrix</h2><p class="lede">Every call against all 16 VANI parameters. Click a cell for the reason and jump to the turn it refers to.</p><div class="legend" style="margin-bottom:.4rem"><span><i class="c-F" style="background:var(--fatal)"></i>Fatal</span><span><i style="background:var(--nf-soft);box-shadow:inset 0 0 0 1.5px var(--nf)"></i>Non-fatal</span><span><i style="background:var(--pass-soft)"></i>Pass</span><span><i style="background:var(--na)"></i>N/A</span><span><i style="background:var(--soft);box-shadow:inset 0 0 0 1px var(--unsc)"></i>Unscorable</span>'+(c['Not analysed']?'<span><i style="background:var(--soft)"></i>Not analysed</span>':'')+'</div>';
+ h+='<div class="tw"><table class="mx"><tr><th class="pn">Parameter</th>'+run.calls.map(function(cc){return '<th class="ch">'+esc(cc.cid)+'<br>'+esc(cc.time)+'</th>'}).join('')+'</tr>';
+ PARAMS.forEach(function(p){h+='<tr><td class="pn">'+esc(p[1])+'<small>'+esc(p[2])+'</small></td>';run.calls.forEach(function(cc,ci){var x=cc.cells[p[0]]||{s:'A'};h+='<td><button class="cell c-'+x.s+'" data-cell="'+ci+'|'+p[0]+'" title="'+esc(SNAME[x.s]+': '+(x.note||''))+'">'+SNAME[x.s]+'</button></td>'});h+='</tr>'});
+ h+='<tr class="overall"><td class="pn">Overall Call<small>Pass / Fatal / Non-fatal basis above parameters</small></td>'+run.calls.map(function(cc){return '<td style="text-align:center">'+vpill(cc)+'</td>'}).join('')+'</tr>';
+ h+='<tr><td class="pn">Additional Observation<small>Not scored</small></td>'+run.calls.map(function(cc){var o=(cc.observations&&cc.observations.length)?cc.observations:[cc.note];return '<td style="font-size:.74rem;min-width:150px">'+o.map(esc).join('<br>• ')+'</td>'}).join('')+'</tr>';
+ h+='</table></div><div class="cellinfo" id="cellinfo">Select a cell to see why it was scored that way.</div></section>';
+ /* transcripts */
+ h+='<section id="transcripts"><h2>Transcripts</h2>';
+ run.calls.forEach(function(cc,i){h+='<details class="tr" id="tr-'+i+'"><summary><b>'+esc(callLabel(cc))+'</b><span class="sim">'+cc.turns.length+' turns · '+cc.dur+' s · '+esc(cc.product)+'</span>'+vpill(cc)+'</summary><div class="turns">'+cc.turns.map(function(t,ti){return '<div class="turn '+t.role+'" id="t-'+i+'-'+(ti+1)+'"><span class="n">'+(ti+1)+'</span><span class="who">'+(t.role==='agent'?'Agent':'Buyer')+'</span><span>'+esc(t.text)+'</span></div>'}).join('')+'</div></details>'});
+ h+='</section>';
+ /* method */
+ h+='<section id="method"><h2>Method &amp; limitations</h2><div class="method">'+
+  '<h3>Ruleset</h3><p>'+esc(run.ruleset)+'</p>'+
+  '<h3>How verdicts are derived</h3><ul><li>Each parameter is Pass, Fatal, Non-fatal, N/A (did not apply) or Unscorable (applied, but the data needed was missing). Every Fatal or Non-fatal cites a call, a turn and a quote.</li><li>Overall Call is Fatal if any parameter is Fatal, Non-fatal if any is Non-fatal, otherwise Pass. A call with an Unscorable parameter that could have been Fatal is marked as a partial audit.</li><li>Captured values come from the agent\'s final variables, never from the transcript. Where the export has no captured record, capture parameters are Unscorable.</li><li>WER is flagged only on evidence in the transcript (buyer corrections, read-back mismatches); audio was not checked. Dead air needs turn timestamps or audio.</li></ul>'+
+  ((run.defaults_used||[]).length?'<h3>Interpretation defaults used</h3><ul>'+run.defaults_used.map(function(d){return '<li><b>'+esc(d[0])+'</b> — '+esc(d[1])+' ('+d[2]+' calls)</li>'}).join('')+'</ul>':'')+
+  ((run.confirmations||[]).length?'<h3>Waiting for the matrix owner to confirm</h3><ul>'+run.confirmations.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>':'')+
+  '<h3>Known limitations of this data</h3><ul><li>Call ids in the export are shared prefixes (two ids across eight calls), so calls are identified by id and start time. Full interaction ids are needed for traceability.</li><li>Three calls look simulated (buyer speaks first, 6–12 turns in about 23 seconds); they are kept in the counts and marked.</li><li>Run times are as stamped by the job that produced each run.</li><li>Priority weights and risk weights are heuristic and shown so they can be challenged.</li></ul></div>'+
+  '<footer>Ron call-quality audit · VANI Call Quality Matrix · '+RUNS.length+' run'+(RUNS.length>1?'s':'')+' in history · generated '+esc(RUNS[0].generated_at)+'</footer></section>';
+ document.getElementById('view').innerHTML=h;
+ document.getElementById('main').scrollTop=0;window.scrollTo(0,0);
+}
+function vpill(c){var k={'Fatal':'F','Non-fatal':'N','Pass':'P','Not analysed':'X'}[c.verdict];return '<span class="pill p-'+k+'">'+esc(c.verdict)+(c.partial?' · partial':'')+'</span>'}
+function openTurn(ci,turn){var d=document.getElementById('tr-'+ci);if(!d)return;d.open=true;document.querySelectorAll('.turn.hl').forEach(function(x){x.classList.remove('hl')});
+ var t=turn?document.getElementById('t-'+ci+'-'+turn):null;var target=t||d;if(t)t.classList.add('hl');target.scrollIntoView({behavior:'smooth',block:'center'})}
+
+/* ---------- events ---------- */
+document.addEventListener('click',function(e){
+ var an=e.target.closest('a[href^="#"]');if(an){var tg=document.getElementById(an.getAttribute('href').slice(1));if(tg){e.preventDefault();tg.scrollIntoView({behavior:'smooth',block:'start'})}return}
+ var rb=e.target.closest('.runbtn');if(rb){select(rb.dataset.run);return}
+ var rr=e.target.closest('.rcrow');if(rr){var d=document.getElementById('rcd-'+rr.dataset.rc);var open=d.hidden;d.hidden=!open;rr.setAttribute('aria-expanded',String(open));return}
+ var ev=e.target.closest('[data-call]');if(ev){openTurn(+ev.dataset.call,ev.dataset.turn?+ev.dataset.turn:null);return}
+ var sb=e.target.closest('.seg button');if(sb){var fi=+sb.dataset.fix,f=current.fixes[fi],el=document.getElementById('diff-'+fi);
+  sb.parentNode.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',String(b===sb))});
+  if(sb.dataset.mode==='split'){el.className='diff split';el.innerHTML=renderDiff(hunksOf(f))}else{el.className='diff unified';el.innerHTML=renderUnified(hunksOf(f))}return}
+ var cb=e.target.closest('[data-copyfix]');if(cb){var f2=current.fixes[+cb.dataset.copyfix];var txt=hunksOf(f2).map(function(h){return h.after}).join('\n\n');copy(txt,cb);return}
+ var ce=e.target.closest('.cell');if(ce){var p=ce.dataset.cell.split('|'),ci=+p[0],c=current.calls[ci],x=c.cells[p[1]],pn=PARAMS.filter(function(q){return q[0]===p[1]})[0][1];
+  var info=document.getElementById('cellinfo');info.innerHTML='<b>'+esc(pn)+'</b> · '+esc(callLabel(c))+' · <span class="pill p-'+x.s+'">'+SNAME[x.s]+'</span><br>'+esc(x.note||'')+(x.rule?' <span class="sim">(rule '+esc(x.rule)+')</span>':'')+(x.turn?' <button class="evlink" data-call="'+ci+'" data-turn="'+x.turn+'">Open turn '+x.turn+'</button>':'');return}
+});
+document.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('rcrow')){e.preventDefault();e.target.click()}});
+function copy(t,btn){function ok(){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o},1300)}
+ function fb(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(x){}document.body.removeChild(ta)}
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,fb);else fb()}
+function select(id){var run=RUNS.filter(function(r){return r.id===id})[0]||RUNS[0];renderNav(run.id);render(run);try{history.replaceState(null,'','#run='+encodeURIComponent(run.id))}catch(x){}}
+var m=/run=([^&]+)/.exec(location.hash);select(m?decodeURIComponent(m[1]):RUNS[0].id);
+})();
+</script>
+</body>
+</html>
