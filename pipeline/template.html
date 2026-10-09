@@ -517,7 +517,7 @@ var APSUBS=[['ap-what','What we audit'],['ap-flow','Data flow'],['ap-params','Th
 function markApproach(on){if(APBTN)APBTN.setAttribute('aria-current',String(on))}
 function showApproach(){current=null;if(AP)AP.hidden=false;if(VIEW)VIEW.hidden=true;markApproach(true);
  document.getElementById('subnav').innerHTML=APSUBS.map(function(x){return '<a href="#'+x[0]+'">'+x[1]+'</a>'}).join('');
- document.querySelectorAll('#runlist .runbtn').forEach(function(b){b.setAttribute('aria-current','false')});
+ renderNav(null);
  document.getElementById('main').scrollTop=0;window.scrollTo(0,0);
  try{history.replaceState(null,'','#approach')}catch(x){}}
 /* ---------- events ---------- */
