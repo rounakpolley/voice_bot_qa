@@ -1,0 +1,7 @@
+# Latest audit artifact
+# Read by the QA agent to answer "show latest audit" / greetings.
+public_link: https://indus.sarvam.ai/artifact/01M4GY2XGMHBXZNCMVVPK82S6B
+latest_run: audit-week-2026-06-28 (Audit Week 28 Jun- 04 Jul)
+dashboard: dashboard/vani-buyer-bot-dashboard.html
+run_data: pipeline/run.json
+updated: 2026-10-09
