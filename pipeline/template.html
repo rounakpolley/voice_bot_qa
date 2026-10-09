@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ron — VANI Call Quality Audit</title>
+<title>Vani_buyer_bot — VANI Call Quality Audit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -195,7 +195,7 @@ footer{margin-top:2.5rem;font-size:.8rem;color:var(--muted)}
 <body>
 <div class="app">
  <aside class="runs" aria-label="Audit runs">
-  <div class="brand"><div class="eyebrow">IndiaMART · Voice QA</div><h1>Ron — Call Quality Audit</h1><p>Every run scored against the VANI Call Quality Matrix. Newest first.</p></div>
+  <div class="brand"><div class="eyebrow">IndiaMART · Voice QA</div><h1>Vani_buyer_bot — Call Quality Audit</h1><p>Every run scored against the VANI Call Quality Matrix. Newest first.</p></div>
   <h2>Runs</h2>
   <ul class="runlist" id="runlist"></ul>
   <div class="navfoot">Appended daily by the audit job. Each run keeps its own calls, matrix, root causes and prompt fixes.</div>
@@ -366,7 +366,7 @@ function render(run){
   ((run.defaults_used||[]).length?'<h3>Interpretation defaults used</h3><ul>'+run.defaults_used.map(function(d){return '<li><b>'+esc(d[0])+'</b> — '+esc(d[1])+' ('+d[2]+' calls)</li>'}).join('')+'</ul>':'')+
   ((run.confirmations||[]).length?'<h3>Waiting for the matrix owner to confirm</h3><ul>'+run.confirmations.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>':'')+
   '<h3>Known limitations of this data</h3><ul><li>Call ids in the export are shared prefixes (two ids across eight calls), so calls are identified by id and start time. Full interaction ids are needed for traceability.</li><li>Three calls look simulated (buyer speaks first, 6–12 turns in about 23 seconds); they are kept in the counts and marked.</li><li>Run times are as stamped by the job that produced each run.</li><li>Priority weights and risk weights are heuristic and shown so they can be challenged.</li></ul></div>'+
-  '<footer>Ron call-quality audit · VANI Call Quality Matrix · '+RUNS.length+' run'+(RUNS.length>1?'s':'')+' in history · generated '+esc(RUNS[0].generated_at)+'</footer></section>';
+  '<footer>Vani_buyer_bot call-quality audit · VANI Call Quality Matrix · '+RUNS.length+' run'+(RUNS.length>1?'s':'')+' in history · generated '+esc(RUNS[0].generated_at)+'</footer></section>';
  document.getElementById('view').innerHTML=h;
  document.getElementById('main').scrollTop=0;window.scrollTo(0,0);
 }
