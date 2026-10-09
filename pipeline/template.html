@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Vani_buyer_bot — VANI Call Quality Audit</title>
+<title>Call Quality Audit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -37,6 +37,13 @@ button{font:inherit;color:inherit}
 .brand .eyebrow{font-size:.74rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .brand h1{font-size:1.35rem;margin-top:.25rem}
 .brand p{margin:.35rem 0 0;font-size:.84rem;color:var(--muted)}
+.approach{margin:.9rem .6rem 0;padding:.85rem .9rem;border:1px solid var(--line);border-radius:8px;background:var(--soft)}
+.approach h3{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 .5rem;font-family:"IBM Plex Sans",sans-serif}
+.approach dl{margin:0}
+.approach dt{font-weight:600;font-size:.78rem;margin:.55rem 0 .1rem}
+.approach dt:first-child{margin-top:0}
+.approach dd{margin:0;font-size:.76rem;color:var(--muted);line-height:1.4}
+.pagefoot{padding:1.4rem 1.2rem 2rem;font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);margin-top:1.5rem}
 .runs h2{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-family:"IBM Plex Sans",sans-serif;font-weight:600;padding:1rem 1.2rem .4rem}
 .runlist{list-style:none;margin:0;padding:0 .6rem 1rem}
 .runbtn{display:block;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:6px;padding:.7rem .7rem .75rem;cursor:pointer;margin-bottom:.25rem}
@@ -169,6 +176,8 @@ tr.overall td{background:var(--soft);font-weight:600}
 /* transcripts */
 details.tr{background:var(--panel);border:1px solid var(--line);border-radius:6px;margin:.5rem 0}
 details.tr summary{cursor:pointer;padding:.6rem .9rem;font-size:.9rem;display:flex;flex-wrap:wrap;gap:.3rem .8rem;align-items:center}
+.rec{display:flex;gap:.7rem;align-items:center;padding:.1rem .9rem .5rem;flex-wrap:wrap}
+.rec audio{height:34px;max-width:320px}
 .turns{padding:.2rem .9rem .8rem;max-height:520px;overflow-y:auto}
 .turn{display:grid;grid-template-columns:2.2rem 3.6rem minmax(0,1fr);gap:.4rem;padding:.3rem .3rem;border-radius:4px;font-size:.9rem}
 .turn .n{color:var(--faint);font-size:.76rem;text-align:right;padding-top:.15rem}
@@ -195,7 +204,16 @@ footer{margin-top:2.5rem;font-size:.8rem;color:var(--muted)}
 <body>
 <div class="app">
  <aside class="runs" aria-label="Audit runs">
-  <div class="brand"><div class="eyebrow">IndiaMART · Voice QA</div><h1>Vani_buyer_bot — Call Quality Audit</h1><p>Every run scored against the VANI Call Quality Matrix. Newest first.</p></div>
+  <div class="brand"><div class="eyebrow">IndiaMART · Voice QA</div><h1>Call Quality Audit</h1><p>Every run scored against the VANI Call Quality Matrix. Newest first.</p></div>
+  <div class="approach">
+   <h3>Our approach</h3>
+   <dl>
+    <dt>What we audit</dt><dd>Every call handled by <b>Vani_voice_bot</b>, our buyer-side voice agent &mdash; scored against the 16-parameter VANI Call Quality Matrix.</dd>
+    <dt>How the data flows</dt><dd>Sarvam Voice Agent (recordings + transcripts) &rarr; <b>Cowork</b>, where this Call Log Analysis agent sits &rarr; scored runs &rarr; this dashboard.</dd>
+    <dt>What we check</dt><dd>Outcome, quantity &amp; unit capture, quantity probing, spec capture, missed opportunities, looping, WER, dead air, product/MCAT accuracy, ISQ errors and the OnCall AstBuy handover. Each parameter is Pass / Fatal / Non-fatal / N/A / Unscorable; the Overall Call verdict follows. Failures are grouped into root causes, each with a minimal prompt fix.</dd>
+    <dt>Cadence</dt><dd>Audit runs are scheduled weekly; each week is a tab in the list below.</dd>
+   </dl>
+  </div>
   <h2>Runs</h2>
   <ul class="runlist" id="runlist"></ul>
   <div class="navfoot">Appended daily by the audit job. Each run keeps its own calls, matrix, root causes and prompt fixes.</div>
@@ -269,7 +287,7 @@ function render(run){
  current=run;var c=counts(run),pr=prevRun(run),pc=pr?counts(pr):null,cov=coverage(run),pcov=pr?coverage(pr):null;
  var audited=run.calls.length-(c['Not analysed']||0),paud=pr?pr.calls.length-(pc['Not analysed']||0):null;
  var fixes=run.fixes||[],rcs=run.root_causes||[],tested=fixes.filter(function(f){return f.trail&&f.trail.tested}).length;
- var subs=[['overview','Overview'],['agreement','Agreement vs humans'],['issues','Root causes'],['fixes','Prompt fixes'],['queue','Review queue'],['calls','Calls'],['scorecard','Scorecard'],['matrix','Full matrix'],['transcripts','Transcripts'],['method','Method & limitations']];
+ var subs=[['overview','Overview'],['agreement','Agreement vs humans'],['issues','Root causes'],['fixes','Prompt fixes'],['queue','Review queue'],['calls','Calls'],['scorecard','Scorecard'],['matrix','Full matrix'],['transcripts','Transcripts']];
  document.getElementById('subnav').innerHTML=subs.map(function(s){return '<a href="#'+s[0]+'">'+s[1]+'</a>'}).join('');
  var h='';
  /* overview */
@@ -302,7 +320,7 @@ function render(run){
   if((ag.by_parameter||[]).length){h+='<div class="tw"><table><tr><th>Parameter</th><th class="num">Compared</th><th class="num">Agree</th><th class="num">Agent-only fail</th><th class="num">Human-only fail</th><th class="num">Agreement</th></tr>';
    ag.by_parameter.forEach(function(p){h+='<tr><td>'+esc(p.name)+'</td><td class="num">'+p.compared+'</td><td class="num">'+p.agree+'</td><td class="num" style="color:var(--fatal)">'+p.agent_only_fail+'</td><td class="num" style="color:var(--nf)">'+p.human_only_fail+'</td><td class="num">'+Math.round(100*p.rate)+'%</td></tr>'});
    h+='</table></div>'}
-  if((ag.confusion||[]).length){h+='<h3 style="margin-top:1.2rem">Confusion (agent × human)</h3><div class="tw"><table><tr><th>Agent</th><th>Human</th><th class="num">Cells</th></tr>';
+  if((ag.confusion||[]).length){h+='<h3 style="margin-top:1.2rem">Confusion (agent \u00d7 human)</h3><div class="tw"><table><tr><th>Agent</th><th>Human</th><th class="num">Cells</th></tr>';
    ag.confusion.forEach(function(x){h+='<tr><td>'+esc(x.agent)+'</td><td>'+esc(x.human)+'</td><td class="num">'+x.n+'</td></tr>'});h+='</table></div>'}
   if((ag.disagreements||[]).length){h+='<h3 style="margin-top:1.2rem">Disagreements to review</h3><div class="tw"><table><tr><th>Call</th><th>Parameter</th><th>Agent</th><th>Human</th><th>Note</th></tr>';
    ag.disagreements.forEach(function(x){var cc=run.calls[x.call];h+='<tr><td><button class="linkish" data-call="'+x.call+'">'+esc(cc?callLabel(cc):String(x.call))+'</button></td><td>'+esc(x.parameter)+'</td><td>'+esc(x.agent)+'</td><td>'+esc(x.human)+'</td><td>'+esc(x.note||'')+'</td></tr>'});h+='</table></div>'}
@@ -357,16 +375,9 @@ function render(run){
  h+='</table></div><div class="cellinfo" id="cellinfo">Select a cell to see why it was scored that way.</div></section>';
  /* transcripts */
  h+='<section id="transcripts"><h2>Transcripts</h2>';
- run.calls.forEach(function(cc,i){h+='<details class="tr" id="tr-'+i+'"><summary><b>'+esc(callLabel(cc))+'</b><span class="sim">'+cc.turns.length+' turns · '+cc.dur+' s · '+esc(cc.product)+'</span>'+vpill(cc)+'</summary><div class="turns">'+cc.turns.map(function(t,ti){return '<div class="turn '+t.role+'" id="t-'+i+'-'+(ti+1)+'"><span class="n">'+(ti+1)+'</span><span class="who">'+(t.role==='agent'?'Agent':'Buyer')+'</span><span>'+esc(t.text)+'</span></div>'}).join('')+'</div></details>'});
+ run.calls.forEach(function(cc,i){h+='<details class="tr" id="tr-'+i+'"><summary><b>'+esc(callLabel(cc))+'</b><span class="sim">'+cc.turns.length+' turns · '+cc.dur+' s · '+esc(cc.product)+'</span>'+vpill(cc)+'</summary>'+(cc.recording?'<div class="rec"><audio controls preload="none" src="'+esc(cc.recording)+'"></audio><a class="evlink" href="'+esc(cc.recording)+'" target="_blank" rel="noopener">open recording</a></div>':'')+'<div class="turns">'+cc.turns.map(function(t,ti){return '<div class="turn '+t.role+'" id="t-'+i+'-'+(ti+1)+'"><span class="n">'+(ti+1)+'</span><span class="who">'+(t.role==='agent'?'Agent':'Buyer')+'</span><span>'+esc(t.text)+'</span></div>'}).join('')+'</div></details>'});
  h+='</section>';
- /* method */
- h+='<section id="method"><h2>Method &amp; limitations</h2><div class="method">'+
-  '<h3>Ruleset</h3><p>'+esc(run.ruleset)+'</p>'+
-  '<h3>How verdicts are derived</h3><ul><li>Each parameter is Pass, Fatal, Non-fatal, N/A (did not apply) or Unscorable (applied, but the data needed was missing). Every Fatal or Non-fatal cites a call, a turn and a quote.</li><li>Overall Call is Fatal if any parameter is Fatal, Non-fatal if any is Non-fatal, otherwise Pass. A call with an Unscorable parameter that could have been Fatal is marked as a partial audit.</li><li>Captured values come from the agent\'s final variables, never from the transcript. Where the export has no captured record, capture parameters are Unscorable.</li><li>WER is flagged only on evidence in the transcript (buyer corrections, read-back mismatches); audio was not checked. Dead air needs turn timestamps or audio.</li></ul>'+
-  ((run.defaults_used||[]).length?'<h3>Interpretation defaults used</h3><ul>'+run.defaults_used.map(function(d){return '<li><b>'+esc(d[0])+'</b> — '+esc(d[1])+' ('+d[2]+' calls)</li>'}).join('')+'</ul>':'')+
-  ((run.confirmations||[]).length?'<h3>Waiting for the matrix owner to confirm</h3><ul>'+run.confirmations.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>':'')+
-  '<h3>Known limitations of this data</h3><ul><li>Call ids in the export are shared prefixes (two ids across eight calls), so calls are identified by id and start time. Full interaction ids are needed for traceability.</li><li>Three calls look simulated (buyer speaks first, 6–12 turns in about 23 seconds); they are kept in the counts and marked.</li><li>Run times are as stamped by the job that produced each run.</li><li>Priority weights and risk weights are heuristic and shown so they can be challenged.</li></ul></div>'+
-  '<footer>Vani_buyer_bot call-quality audit · VANI Call Quality Matrix · '+RUNS.length+' run'+(RUNS.length>1?'s':'')+' in history · generated '+esc(RUNS[0].generated_at)+'</footer></section>';
+ h+='<footer class="pagefoot">Call Quality Audit &middot; VANI Call Quality Matrix &middot; '+RUNS.length+' run'+(RUNS.length>1?'s':'')+' in history &middot; generated '+esc(RUNS[0].generated_at)+'</footer>';
  document.getElementById('view').innerHTML=h;
  document.getElementById('main').scrollTop=0;window.scrollTo(0,0);
 }
