@@ -85,6 +85,10 @@ button{font:inherit;color:inherit}
 .ap-loop .l span{display:block;font-size:.79rem;color:var(--muted);margin-top:.3rem;line-height:1.5}
 .ap-foot{margin-top:2.4rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.8rem;color:var(--muted)}
 @media (max-width:900px){.ap-glance,.ap-score,.ap-loop{grid-template-columns:repeat(2,1fr)}.ap-params,.ap-grid2{grid-template-columns:1fr}}
+.apwrap{padding:.95rem .6rem 0}
+.apbtn{margin-bottom:0}
+.apbtn .ts{font-size:.98rem}
+.apbtn[aria-current="true"]{background:var(--signal-soft);border-color:var(--signal)}
 .runs h2{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-family:"IBM Plex Sans",sans-serif;font-weight:600;padding:1rem 1.2rem .4rem}
 .runlist{list-style:none;margin:0;padding:0 .6rem 1rem}
 .runbtn{display:block;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:6px;padding:.7rem .7rem .75rem;cursor:pointer;margin-bottom:.25rem}
@@ -246,11 +250,7 @@ footer{margin-top:2.5rem;font-size:.8rem;color:var(--muted)}
 <div class="app">
  <aside class="runs" aria-label="Audit runs">
   <div class="brand"><div class="eyebrow">IndiaMART · Voice QA</div><h1>Call Quality Audit</h1><p>Every run scored against the VANI Call Quality Matrix. Newest first.</p></div>
-  <a class="approach" href="#approach">
-   <h3>Our approach</h3>
-   <p>Every Vani_voice_bot call, scored against the 16-parameter VANI Call Quality Matrix &mdash; then fixed.</p>
-   <span class="go">Read the full approach &rarr;</span>
-  </a>
+  <div class="apwrap"><button class="runbtn apbtn" id="apbtn" data-approach="1" aria-current="true"><div class="ts">Our approach</div><div class="lbl">How this audit works</div></button></div>
   <h2>Runs</h2>
   <ul class="runlist" id="runlist"></ul>
   <div class="navfoot">Appended daily by the audit job. Each run keeps its own calls, matrix, root causes and prompt fixes.</div>
@@ -267,13 +267,13 @@ footer{margin-top:2.5rem;font-size:.8rem;color:var(--muted)}
   <div class="g"><b>Audit &rarr; Fix</b><span>evidence to prompt diff, then tested</span></div>
  </div>
 
- <h2><span class="n">1</span> What we audit</h2>
+ <h2 id="ap-what"><span class="n">1</span> What we audit</h2>
  <div class="ap-grid2">
   <div class="ap-card"><h3>The agent under test</h3><p><b>Vani_voice_bot</b> &mdash; IndiaMART&rsquo;s buyer-side voice agent. Every call it handles in the audit window is in scope: inbound and outbound, across products, cities and languages.</p></div>
   <div class="ap-card"><h3>What we look at</h3><p>The call log and the full transcript of each call: the buyer&rsquo;s stated requirement, what the agent captured, how it probed, where it looped or went silent, and how the handover to a seller fired.</p></div>
  </div>
 
- <h2><span class="n">2</span> How the data flows</h2>
+ <h2 id="ap-flow"><span class="n">2</span> How the data flows</h2>
  <figure class="ap-flow">
   <svg viewBox="0 0 920 150" role="img" aria-label="Sarvam Voice Agent produces call recordings and transcripts; they flow into Cowork, where the Call Log Analysis agent scores them; the result is this audit dashboard.">
    <defs>
@@ -302,7 +302,7 @@ footer{margin-top:2.5rem;font-size:.8rem;color:var(--muted)}
   <figcaption>The bot&rsquo;s calls land as recordings and transcripts from the Sarvam Voice Agent; this agent in Cowork scores them and publishes the run here.</figcaption>
  </figure>
 
- <h2><span class="n">3</span> What we check &mdash; the 16 parameters</h2>
+ <h2 id="ap-params"><span class="n">3</span> What we check &mdash; the 16 parameters</h2>
  <div class="ap-params">
   <div class="ap-pgroup">
    <h4>Outcome &amp; product <span class="c">3</span></h4>
@@ -322,7 +322,7 @@ footer{margin-top:2.5rem;font-size:.8rem;color:var(--muted)}
   </div>
  </div>
 
- <h2><span class="n">4</span> How we score</h2>
+ <h2 id="ap-score"><span class="n">4</span> How we score</h2>
  <div class="ap-score">
   <div class="s"><b style="color:var(--pass)">Pass</b><span>clean &mdash; no defect</span></div>
   <div class="s"><b style="color:var(--fatal)">Fatal</b><span>breaks the call or the lead</span></div>
@@ -332,7 +332,7 @@ footer{margin-top:2.5rem;font-size:.8rem;color:var(--muted)}
  </div>
  <div class="ap-rule"><b>Overall Call verdict &mdash;</b> Fatal if any parameter is Fatal; Non-fatal if any is Non-fatal; otherwise Pass. A call whose verdict could have changed had an Unscorable parameter been known is marked <b>partial</b>.</div>
 
- <h2><span class="n">5</span> What comes out</h2>
+ <h2 id="ap-out"><span class="n">5</span> What comes out</h2>
  <div class="ap-loop">
   <div class="l"><span class="k">Step 1</span><b>Audit</b><span>Every call scored against the matrix, each Fatal and Non-fatal tied to a call, a turn and a quote.</span></div>
   <div class="l"><span class="k">Step 2</span><b>Group</b><span>Failures rolled into root causes, ranked by frequency &times; severity.</span></div>
@@ -340,11 +340,11 @@ footer{margin-top:2.5rem;font-size:.8rem;color:var(--muted)}
   <div class="l"><span class="k">Step 4</span><b>Test</b><span>The fix is run against the bot&rsquo;s test suite before it ships to the draft.</span></div>
  </div>
 
- <h2><span class="n">6</span> Cadence</h2>
+ <h2 id="ap-cadence"><span class="n">6</span> Cadence</h2>
  <p class="lede">Audit runs are scheduled weekly. Each week becomes its own tab in the run list, so a run can be compared against the one before it &mdash; the same calls, the same matrix, and the fixes that moved the numbers.</p>
  <div class="ap-foot">Call Quality Audit &middot; VANI Call Quality Matrix &middot; weekly runs of Vani_voice_bot &middot; published to the <span class="mono">voice_bot_qa</span> repo.</div>
 </div>
-<div class="wrap" id="view"></div></main>
+<div class="wrap" id="view" hidden></div></main>
 </div>
 <script type="application/json" id="audit-data">/*__AUDIT_DATA__*/</script>
 <script>
@@ -413,7 +413,7 @@ function render(run){
  current=run;var c=counts(run),pr=prevRun(run),pc=pr?counts(pr):null,cov=coverage(run),pcov=pr?coverage(pr):null;
  var audited=run.calls.length-(c['Not analysed']||0),paud=pr?pr.calls.length-(pc['Not analysed']||0):null;
  var fixes=run.fixes||[],rcs=run.root_causes||[],tested=fixes.filter(function(f){return f.trail&&f.trail.tested}).length;
- var subs=[['approach','Our approach'],['overview','Overview'],['agreement','Agreement vs humans'],['issues','Root causes'],['fixes','Prompt fixes'],['queue','Review queue'],['calls','Calls'],['scorecard','Scorecard'],['matrix','Full matrix'],['transcripts','Transcripts']];
+ var subs=[['overview','Overview'],['agreement','Agreement vs humans'],['issues','Root causes'],['fixes','Prompt fixes'],['queue','Review queue'],['calls','Calls'],['scorecard','Scorecard'],['matrix','Full matrix'],['transcripts','Transcripts']];
  document.getElementById('subnav').innerHTML=subs.map(function(s){return '<a href="#'+s[0]+'">'+s[1]+'</a>'}).join('');
  var h='';
  /* overview */
@@ -511,9 +511,19 @@ function vpill(c){var k={'Fatal':'F','Non-fatal':'N','Pass':'P','Not analysed':'
 function openTurn(ci,turn){var d=document.getElementById('tr-'+ci);if(!d)return;d.open=true;document.querySelectorAll('.turn.hl').forEach(function(x){x.classList.remove('hl')});
  var t=turn?document.getElementById('t-'+ci+'-'+turn):null;var target=t||d;if(t)t.classList.add('hl');target.scrollIntoView({behavior:'smooth',block:'center'})}
 
+/* ---------- our approach tab ---------- */
+var AP=document.getElementById('approach'),VIEW=document.getElementById('view'),APBTN=document.getElementById('apbtn');
+var APSUBS=[['ap-what','What we audit'],['ap-flow','Data flow'],['ap-params','The parameters'],['ap-score','Scoring'],['ap-out','What comes out'],['ap-cadence','Cadence']];
+function markApproach(on){if(APBTN)APBTN.setAttribute('aria-current',String(on))}
+function showApproach(){current=null;if(AP)AP.hidden=false;if(VIEW)VIEW.hidden=true;markApproach(true);
+ document.getElementById('subnav').innerHTML=APSUBS.map(function(x){return '<a href="#'+x[0]+'">'+x[1]+'</a>'}).join('');
+ document.querySelectorAll('#runlist .runbtn').forEach(function(b){b.setAttribute('aria-current','false')});
+ document.getElementById('main').scrollTop=0;window.scrollTo(0,0);
+ try{history.replaceState(null,'','#approach')}catch(x){}}
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
  var an=e.target.closest('a[href^="#"]');if(an){var tg=document.getElementById(an.getAttribute('href').slice(1));if(tg){e.preventDefault();tg.scrollIntoView({behavior:'smooth',block:'start'})}return}
+ var ab=e.target.closest('.apbtn');if(ab){showApproach();return}
  var rb=e.target.closest('.runbtn');if(rb){select(rb.dataset.run,true);return}
  var rr=e.target.closest('.rcrow');if(rr){var d=document.getElementById('rcd-'+rr.dataset.rc);var open=d.hidden;d.hidden=!open;rr.setAttribute('aria-expanded',String(open));return}
  var ev=e.target.closest('[data-call]');if(ev){openTurn(+ev.dataset.call,ev.dataset.turn?+ev.dataset.turn:null);return}
@@ -528,8 +538,8 @@ document.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' '
 function copy(t,btn){function ok(){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o},1300)}
  function fb(){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');ok()}catch(x){}document.body.removeChild(ta)}
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,fb);else fb()}
-function select(id,toRun){var run=RUNS.filter(function(r){return r.id===id})[0]||RUNS[0];renderNav(run.id);render(run);if(toRun){var ov=document.getElementById('overview');if(ov)ov.scrollIntoView({behavior:'smooth',block:'start'})}try{history.replaceState(null,'','#run='+encodeURIComponent(run.id))}catch(x){}}
-var m=/run=([^&]+)/.exec(location.hash);select(m?decodeURIComponent(m[1]):RUNS[0].id);
+function select(id,toRun){var run=RUNS.filter(function(r){return r.id===id})[0]||RUNS[0];renderNav(run.id);render(run);if(AP)AP.hidden=true;if(VIEW)VIEW.hidden=false;markApproach(false);if(toRun){var ov=document.getElementById('overview');if(ov)ov.scrollIntoView({behavior:'smooth',block:'start'})}try{history.replaceState(null,'','#run='+encodeURIComponent(run.id))}catch(x){}}
+var m=/run=([^&]+)/.exec(location.hash);if(m){select(decodeURIComponent(m[1]))}else{showApproach()}
 })();
 </script>
 </body>
